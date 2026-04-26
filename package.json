@@ -1,0 +1,15 @@
+{
+  "name": "js-bookmarket",
+  "version": "1.0.0",
+  "description": "Bookmarklet tool for selecting and copying HTML elements from any webpage",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "node scripts/dev-server.mjs",
+    "build": "node scripts/build-bookmarklet.mjs",
+    "bundle": "esbuild src/main.js --bundle --minify --format=iife --outfile=dist/bundle.js"
+  },
+  "devDependencies": {
+    "esbuild": "^0.25.0"
+  }
+}
