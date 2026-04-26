@@ -7,13 +7,13 @@
 ### 安装依赖
 
 ```bash
-pnpm install
+npm install
 ```
 
 ### 本地开发
 
 ```bash
-pnpm dev
+npm run dev
 ```
 
 打开 http://localhost:7890 ，点击页面顶部红色 **Load Bookmarklet** 按钮即可注入工具进行调试。
@@ -23,7 +23,7 @@ pnpm dev
 ### 构建 Bookmarklet
 
 ```bash
-pnpm build
+npm run build
 ```
 
 产物在 `dist/` 目录：
@@ -36,7 +36,7 @@ pnpm build
 
 ### 安装到书签栏
 
-1. 运行 `pnpm build`
+1. 运行 `npm run build`
 2. 打开 `dist/bookmarklet.txt`，复制全部内容
 3. 在浏览器中新建一个书签，名称随意（如 "Element Picker"）
 4. 将复制的内容粘贴到书签的 **URL** 栏
@@ -61,7 +61,7 @@ pnpm build
 ### 方式一：Dev Server（推荐）
 
 ```bash
-pnpm dev
+npm run dev
 ```
 
 在 http://localhost:7890 的测试页面上，点击顶部按钮注入脚本。代码修改后刷新页面即可。
