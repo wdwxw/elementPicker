@@ -1,10 +1,18 @@
-import { PANEL_ID, HIGHLIGHT_CLASS, LOCKED_CLASS } from './styles.js';
+import {
+  PANEL_ID,
+  INLINE_COPY_ID,
+  HOVER_RING_ID,
+  LOCK_RING_ID,
+  HIGHLIGHT_CLASS,
+  LOCKED_CLASS,
+} from './styles.js';
 
 const EXCLUDED_TAGS = new Set(['html', 'body', 'head', 'script', 'style']);
 
 function isExcluded(el) {
   if (!el || el.nodeType !== 1) return true;
   if (el.id === PANEL_ID || el.closest(`#${PANEL_ID}`)) return true;
+  if (el.id === INLINE_COPY_ID || el.closest(`#${INLINE_COPY_ID}`)) return true;
   if (EXCLUDED_TAGS.has(el.tagName.toLowerCase())) return true;
   if (el.tagName === 'INPUT' && el.type === 'password') return true;
   return false;
@@ -14,6 +22,8 @@ export function createSelector() {
   let hoveredEl = null;
   let lockedEl = null;
   let active = false;
+  const hoverRing = createRing(HOVER_RING_ID);
+  const lockRing = createRing(LOCK_RING_ID);
 
   const callbacks = { onLock: null, onUnlock: null };
 
@@ -22,12 +32,14 @@ export function createSelector() {
       hoveredEl.classList.remove(HIGHLIGHT_CLASS);
       hoveredEl = null;
     }
+    hideRing(hoverRing);
   }
 
   function clearLock() {
     if (lockedEl) {
       lockedEl.classList.remove(LOCKED_CLASS);
       lockedEl = null;
+      hideRing(lockRing);
       if (callbacks.onUnlock) callbacks.onUnlock();
     }
   }
@@ -38,6 +50,7 @@ export function createSelector() {
     clearLock();
     lockedEl = el;
     lockedEl.classList.add(LOCKED_CLASS);
+    placeRing(lockRing, lockedEl);
     if (callbacks.onLock) callbacks.onLock(lockedEl);
   }
 
@@ -49,12 +62,22 @@ export function createSelector() {
     clearHighlight();
     hoveredEl = target;
     hoveredEl.classList.add(HIGHLIGHT_CLASS);
+    placeRing(hoverRing, hoveredEl);
   }
 
   function handleMouseOut(e) {
     if (!active || lockedEl) return;
     if (e.target === hoveredEl) {
       clearHighlight();
+    }
+  }
+
+  function handleViewportChange() {
+    if (hoveredEl && !lockedEl) {
+      placeRing(hoverRing, hoveredEl);
+    }
+    if (lockedEl) {
+      placeRing(lockRing, lockedEl);
     }
   }
 
@@ -98,16 +121,22 @@ export function createSelector() {
     document.addEventListener('mouseout', handleMouseOut, true);
     document.addEventListener('click', handleClick, true);
     document.addEventListener('keydown', handleKeyDown, true);
+    window.addEventListener('scroll', handleViewportChange, true);
+    window.addEventListener('resize', handleViewportChange);
   }
 
   function deactivate() {
     active = false;
     clearHighlight();
     clearLock();
+    hideRing(hoverRing);
+    hideRing(lockRing);
     document.removeEventListener('mouseover', handleMouseOver, true);
     document.removeEventListener('mouseout', handleMouseOut, true);
     document.removeEventListener('click', handleClick, true);
     document.removeEventListener('keydown', handleKeyDown, true);
+    window.removeEventListener('scroll', handleViewportChange, true);
+    window.removeEventListener('resize', handleViewportChange);
   }
 
   function getLockedElement() {
@@ -126,4 +155,27 @@ export function createSelector() {
     isActive,
     callbacks,
   };
+}
+
+function createRing(id) {
+  const existed = document.getElementById(id);
+  if (existed) existed.remove();
+  const ring = document.createElement('div');
+  ring.id = id;
+  document.body.appendChild(ring);
+  return ring;
+}
+
+function hideRing(ring) {
+  ring.style.display = 'none';
+}
+
+function placeRing(ring, el) {
+  if (!el) return;
+  const rect = el.getBoundingClientRect();
+  ring.style.display = 'block';
+  ring.style.top = `${rect.top}px`;
+  ring.style.left = `${rect.left}px`;
+  ring.style.width = `${rect.width}px`;
+  ring.style.height = `${rect.height}px`;
 }

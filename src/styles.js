@@ -1,4 +1,7 @@
 const PANEL_ID = 'bm-picker-panel';
+const INLINE_COPY_ID = 'bm-picker-inline-copy';
+const HOVER_RING_ID = 'bm-picker-hover-ring';
+const LOCK_RING_ID = 'bm-picker-lock-ring';
 const HIGHLIGHT_CLASS = 'bm-picker-highlight';
 const LOCKED_CLASS = 'bm-picker-locked';
 
@@ -8,32 +11,50 @@ const CSS = `
   bottom: 20px;
   right: 20px;
   z-index: 2147483647;
-  background: #1b1b1f;
-  color: #eeeef0;
-  border-radius: 8px;
+  width: 260px;
+  min-width: 260px;
+  max-width: 260px;
   padding: 12px;
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  border-radius: 12px;
+  border: 1px solid rgba(0, 0, 0, 0.09);
+  background: rgba(255, 255, 255, 0.96);
+  color: #1a1a1a;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
   font-size: 13px;
-  box-shadow: 0 4px 24px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.06);
   user-select: none;
   cursor: move;
-  min-width: 200px;
-  border: none;
+  box-shadow:
+    0 0 0 1px rgba(0, 0, 0, 0.03),
+    0 4px 6px -1px rgba(0, 0, 0, 0.06),
+    0 16px 32px -4px rgba(0, 0, 0, 0.11);
+  animation: bm-panel-in 180ms cubic-bezier(0.2, 0.9, 0.2, 1);
 }
 
 #${PANEL_ID} .bm-title {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 10px;
   font-size: 11px;
   font-weight: 500;
-  color: #6b6f76;
-  margin-bottom: 8px;
-  letter-spacing: 0.3px;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  color: #b5b5b5;
   pointer-events: none;
+}
+
+#${PANEL_ID} .bm-title::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: 999px;
+  background: #4ade80;
 }
 
 #${PANEL_ID} .bm-btn-row {
   display: flex;
-  gap: 4px;
-  margin-bottom: 4px;
+  gap: 6px;
+  margin-bottom: 6px;
 }
 
 #${PANEL_ID} .bm-btn-row:last-child {
@@ -42,99 +63,160 @@ const CSS = `
 
 #${PANEL_ID} .bm-btn {
   flex: 1;
-  padding: 6px 8px;
-  border: none;
+  min-width: 0;
+  padding: 7px 10px;
+  border: 1px solid #e8e8e8;
   border-radius: 6px;
-  background: rgba(255,255,255,0.06);
-  color: #b4b5b9;
+  background: #f7f7f7;
+  color: #555;
   font-size: 12px;
   font-weight: 500;
-  cursor: pointer;
-  text-align: center;
-  transition: all 0.12s ease;
   line-height: 1.2;
+  text-align: center;
+  cursor: pointer;
+  transition: color 100ms ease, background 100ms ease, border-color 100ms ease, transform 80ms ease;
 }
 
 #${PANEL_ID} .bm-btn:hover {
-  background: rgba(255,255,255,0.1);
-  color: #eeeef0;
+  background: #efefef;
+  border-color: #dddddd;
+  color: #222;
 }
 
 #${PANEL_ID} .bm-btn:active {
-  transform: scale(0.97);
+  transform: translateY(1px);
 }
 
-#${PANEL_ID} .bm-btn.active {
-  background: #5e6ad2;
-  color: #fff;
-  font-weight: 500;
-}
-
-#${PANEL_ID} .bm-btn.active:hover {
-  background: #6c78e0;
-}
-
+#${PANEL_ID} .bm-btn.active,
 #${PANEL_ID} .bm-btn.primary {
-  background: #5e6ad2;
+  background: #111;
+  border-color: #111;
   color: #fff;
-  font-weight: 500;
 }
 
+#${PANEL_ID} .bm-btn.active:hover,
 #${PANEL_ID} .bm-btn.primary:hover {
-  background: #6c78e0;
+  background: #333;
+  border-color: #333;
 }
 
 #${PANEL_ID} .bm-btn.danger {
-  background: transparent;
-  color: #e5484d;
+  background: #f0f0f0;
+  border-color: #e0e0e0;
+  color: #666;
 }
 
 #${PANEL_ID} .bm-btn.danger:hover {
-  background: rgba(229, 72, 77, 0.12);
-  color: #f16a6e;
-}
-
-#${PANEL_ID} .bm-info {
-  font-size: 11px;
-  color: #5c5f66;
-  margin-top: 6px;
-  line-height: 1.4;
-  pointer-events: none;
+  background: #e6e6e6;
+  border-color: #d6d6d6;
+  color: #444;
 }
 
 #${PANEL_ID} .bm-toast {
   position: absolute;
-  top: -32px;
+  top: -34px;
   left: 50%;
-  transform: translateX(-50%);
-  background: #5e6ad2;
-  color: #fff;
-  padding: 4px 12px;
-  border-radius: 6px;
-  font-size: 11px;
-  font-weight: 500;
+  transform: translateX(-50%) translateY(4px);
+  border-radius: 3px;
+  padding: 4px 10px;
   white-space: nowrap;
+  font-size: 10px;
+  font-weight: 600;
+  color: #fff;
+  background: #111;
   opacity: 0;
-  transition: opacity 0.15s ease;
   pointer-events: none;
+  transition: opacity 120ms ease, transform 120ms ease;
 }
 
 #${PANEL_ID} .bm-toast.show {
   opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+#${HOVER_RING_ID},
+#${LOCK_RING_ID} {
+  position: fixed;
+  display: none;
+  z-index: 2147483646;
+  pointer-events: none;
+  border-radius: 3px;
+  box-sizing: border-box;
+}
+
+#${HOVER_RING_ID} {
+  border: 1.5px dashed rgba(0, 0, 0, 0.22);
+  background: rgba(0, 0, 0, 0.03);
+  transition: opacity 80ms ease;
+}
+
+#${LOCK_RING_ID} {
+  border: 1.5px dashed rgba(0, 0, 0, 0.22);
+  background: rgba(0, 0, 0, 0.03);
+  animation: bm-lock-in 180ms cubic-bezier(0.2, 0, 0.1, 1);
 }
 
 .${HIGHLIGHT_CLASS} {
-  outline: 2px solid #5e6ad2 !important;
-  outline-offset: -1px !important;
-  background-color: rgba(94, 106, 210, 0.06) !important;
+  outline: none !important;
+  box-shadow: none !important;
+  background-color: rgba(0, 0, 0, 0.025) !important;
   cursor: pointer !important;
-  transition: outline-color 0.1s !important;
 }
 
 .${LOCKED_CLASS} {
-  outline: 2px solid #e5484d !important;
-  outline-offset: -1px !important;
-  background-color: rgba(229, 72, 77, 0.06) !important;
+  outline: none !important;
+  box-shadow: none !important;
+  background-color: rgba(0, 0, 0, 0.045) !important;
+}
+
+#${INLINE_COPY_ID} {
+  position: fixed;
+  z-index: 2147483647;
+  display: none;
+  padding: 3px 7px;
+  border: none;
+  border-radius: 4px;
+  background: #333;
+  color: #aaa;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+  font-size: 10px;
+  font-weight: 600;
+  line-height: 1.2;
+  cursor: pointer;
+  user-select: none;
+  letter-spacing: 0.01em;
+  transition: background 100ms ease, color 100ms ease, transform 80ms ease;
+}
+
+#${INLINE_COPY_ID}:hover {
+  background: #555;
+  color: #fff;
+}
+
+#${INLINE_COPY_ID}:active {
+  transform: translateY(1px);
+}
+
+@keyframes bm-panel-in {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 8px, 0) scale(0.985);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+}
+
+@keyframes bm-lock-in {
+  from {
+    opacity: 0;
+    transform: scale(1.05);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
 }
 `;
 
@@ -151,4 +233,4 @@ export function removeStyles() {
   if (style) style.remove();
 }
 
-export { PANEL_ID, HIGHLIGHT_CLASS, LOCKED_CLASS };
+export { PANEL_ID, INLINE_COPY_ID, HOVER_RING_ID, LOCK_RING_ID, HIGHLIGHT_CLASS, LOCKED_CLASS };

@@ -7,23 +7,23 @@
 ### 安装依赖
 
 ```bash
-npm install
+pnpm install
 ```
 
 ### 本地开发
 
 ```bash
-npm run dev
+pnpm dev
 ```
 
-打开 http://localhost:3456 ，点击页面顶部红色 **Load Bookmarklet** 按钮即可注入工具进行调试。
+打开 http://localhost:7890 ，点击页面顶部红色 **Load Bookmarklet** 按钮即可注入工具进行调试。
 
 修改 `src/` 下的文件后，esbuild 会自动重新打包，刷新页面即可看到更新。
 
 ### 构建 Bookmarklet
 
 ```bash
-npm run build
+pnpm build
 ```
 
 产物在 `dist/` 目录：
@@ -36,7 +36,7 @@ npm run build
 
 ### 安装到书签栏
 
-1. 运行 `npm run build`
+1. 运行 `pnpm build`
 2. 打开 `dist/bookmarklet.txt`，复制全部内容
 3. 在浏览器中新建一个书签，名称随意（如 "Element Picker"）
 4. 将复制的内容粘贴到书签的 **URL** 栏
@@ -46,8 +46,8 @@ npm run build
 
 1. 点击书签 → 页面右下角出现悬浮面板
 2. 点击 **Click** 按钮 → 进入元素选择模式
-3. 鼠标移到页面元素上 → 蓝色边框高亮
-4. 点击元素 → 黄色边框锁定选中
+3. 鼠标移到页面元素上 → 虚线框高亮
+4. 点击元素 → 虚线框锁定选中
 5. 按 **↑** / **↓** 方向键 → 切换到父级/子级元素
 6. 切换 **Origin** / **Format** 模式（默认 Origin）
 7. 点击 **Copy** → 复制 HTML 代码到剪贴板
@@ -61,10 +61,10 @@ npm run build
 ### 方式一：Dev Server（推荐）
 
 ```bash
-npm run dev
+pnpm dev
 ```
 
-在 http://localhost:3456 的测试页面上，点击顶部按钮注入脚本。代码修改后刷新页面即可。
+在 http://localhost:7890 的测试页面上，点击顶部按钮注入脚本。代码修改后刷新页面即可。
 
 ### 方式二：浏览器控制台
 

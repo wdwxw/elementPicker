@@ -26,7 +26,6 @@ export function createPanel() {
       <button class="bm-btn" id="bm-btn-copy">Copy</button>
       <button class="bm-btn danger" id="bm-btn-clear">Clear</button>
     </div>
-    <div class="bm-info" id="bm-info">Click "Click" to start selecting elements</div>
   `;
 
   document.body.appendChild(panel);
@@ -81,6 +80,7 @@ export function showToast(toast, message, duration = 1500) {
 }
 
 export function updateInfo(info, text) {
+  if (!info) return;
   info.textContent = text;
 }
 
