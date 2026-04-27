@@ -5,18 +5,19 @@ import { formatHTML } from './formatter.js';
  * @param {HTMLElement} element
  * @param {'origin' | 'format'} mode
  * @param {boolean} includeCss
- * @returns {Promise<boolean>} true if copy succeeded
+ * @returns {Promise<{ ok: boolean, sizeBytes: number }>}
  */
 export async function copyElementHTML(element, mode, includeCss = false) {
-  if (!element) return false;
+  if (!element) return { ok: false, sizeBytes: 0 };
 
   const html = includeCss ? buildHTMLWithCSS(element, mode) : buildHTMLOnly(element, mode);
+  const sizeBytes = getTextSizeBytes(html);
 
   try {
     await navigator.clipboard.writeText(html);
-    return true;
+    return { ok: true, sizeBytes };
   } catch {
-    return fallbackCopy(html);
+    return { ok: fallbackCopy(html), sizeBytes };
   }
 }
 
@@ -268,4 +269,12 @@ function mergeRules(primary, fallback) {
 
 function indent(text) {
   return text.split('\n').map((line) => line ? `  ${line}` : line).join('\n');
+}
+
+function getTextSizeBytes(text) {
+  try {
+    return new TextEncoder().encode(text).length;
+  } catch {
+    return text.length;
+  }
 }

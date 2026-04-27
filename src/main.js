@@ -19,6 +19,10 @@ import { copyElementHTML } from './copier.js';
   let copyMode = 'origin'; // 'origin' | 'format'
   let includeCss = false;
 
+  function formatCopySize(sizeBytes) {
+    return `${(sizeBytes / 1024).toFixed(1)}kb`;
+  }
+
   function describeElement(el) {
     const tag = el.tagName.toLowerCase();
     const id = el.id ? `#${el.id}` : '';
@@ -111,11 +115,11 @@ import { copyElementHTML } from './copier.js';
       showToast(ui.toast, 'No element selected', 1200);
       return;
     }
-    const ok = await copyElementHTML(el, copyMode, includeCss);
-    if (ok) {
+    const result = await copyElementHTML(el, copyMode, includeCss);
+    if (result.ok) {
       const modeLabel = copyMode === 'origin' ? 'Origin' : 'Formatted';
       const payloadLabel = includeCss ? `${modeLabel} HTML + CSS` : `${modeLabel} HTML`;
-      showToast(ui.toast, `${payloadLabel} copied!`);
+      showToast(ui.toast, `${payloadLabel} copied! ${formatCopySize(result.sizeBytes)}`);
     } else {
       showToast(ui.toast, 'Copy failed', 1500);
     }
@@ -126,11 +130,11 @@ import { copyElementHTML } from './copier.js';
     e.stopPropagation();
     const el = selector.getLockedElement();
     if (!el) return;
-    const ok = await copyElementHTML(el, copyMode, includeCss);
-    if (ok) {
+    const result = await copyElementHTML(el, copyMode, includeCss);
+    if (result.ok) {
       const modeLabel = copyMode === 'origin' ? 'Origin' : 'Formatted';
       const payloadLabel = includeCss ? `${modeLabel} HTML + CSS` : `${modeLabel} HTML`;
-      showToast(ui.toast, `${payloadLabel} copied!`);
+      showToast(ui.toast, `${payloadLabel} copied! ${formatCopySize(result.sizeBytes)}`);
     }
   });
 
