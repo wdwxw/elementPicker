@@ -17,6 +17,7 @@ import { copyElementHTML } from './copier.js';
   const inlineCopy = createInlineCopyButton();
 
   let copyMode = 'origin'; // 'origin' | 'format'
+  let includeCss = false;
 
   function describeElement(el) {
     const tag = el.tagName.toLowerCase();
@@ -64,6 +65,11 @@ import { copyElementHTML } from './copier.js';
     ui.btnOrigin.classList.remove('active');
   });
 
+  ui.btnCss.addEventListener('click', () => {
+    includeCss = !includeCss;
+    ui.btnCss.classList.toggle('active', includeCss);
+  });
+
   // --- Click button: toggle selection mode ---
 
   ui.btnClick.addEventListener('click', () => {
@@ -105,10 +111,11 @@ import { copyElementHTML } from './copier.js';
       showToast(ui.toast, 'No element selected', 1200);
       return;
     }
-    const ok = await copyElementHTML(el, copyMode);
+    const ok = await copyElementHTML(el, copyMode, includeCss);
     if (ok) {
       const modeLabel = copyMode === 'origin' ? 'Origin' : 'Formatted';
-      showToast(ui.toast, `${modeLabel} HTML copied!`);
+      const payloadLabel = includeCss ? `${modeLabel} HTML + CSS` : `${modeLabel} HTML`;
+      showToast(ui.toast, `${payloadLabel} copied!`);
     } else {
       showToast(ui.toast, 'Copy failed', 1500);
     }
@@ -119,10 +126,11 @@ import { copyElementHTML } from './copier.js';
     e.stopPropagation();
     const el = selector.getLockedElement();
     if (!el) return;
-    const ok = await copyElementHTML(el, copyMode);
+    const ok = await copyElementHTML(el, copyMode, includeCss);
     if (ok) {
       const modeLabel = copyMode === 'origin' ? 'Origin' : 'Formatted';
-      showToast(ui.toast, `${modeLabel} HTML copied!`);
+      const payloadLabel = includeCss ? `${modeLabel} HTML + CSS` : `${modeLabel} HTML`;
+      showToast(ui.toast, `${payloadLabel} copied!`);
     }
   });
 

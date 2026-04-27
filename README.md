@@ -18,6 +18,8 @@ npm run dev
 
 打开 http://localhost:7890 ，点击页面顶部红色 **Load Bookmarklet** 按钮即可注入工具进行调试。
 
+若 `7890` 端口被占用，开发服务会自动切换到下一个可用端口（如 `7891`），请以终端输出的 URL 为准。
+
 修改 `src/` 下的文件后，esbuild 会自动重新打包，刷新页面即可看到更新。
 
 ### 构建 Bookmarklet

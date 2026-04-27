@@ -26,6 +26,9 @@ export function createPanel() {
       <button class="bm-btn" id="bm-btn-copy">Copy</button>
       <button class="bm-btn danger" id="bm-btn-clear">Clear</button>
     </div>
+    <div class="bm-btn-row">
+      <button class="bm-btn" id="bm-btn-css">CSS</button>
+    </div>
   `;
 
   document.body.appendChild(panel);
@@ -38,6 +41,7 @@ export function createPanel() {
     btnFormat: panel.querySelector('#bm-btn-format'),
     btnCopy: panel.querySelector('#bm-btn-copy'),
     btnClear: panel.querySelector('#bm-btn-clear'),
+    btnCss: panel.querySelector('#bm-btn-css'),
     info: panel.querySelector('#bm-info'),
     toast: panel.querySelector('#bm-toast'),
   };
